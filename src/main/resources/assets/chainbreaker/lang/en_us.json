@@ -1,0 +1,13 @@
+{
+  "itemGroup.chainbreaker": "Example Mod Tab",
+  "block.chainbreaker.example_block": "Example Block",
+  "item.chainbreaker.example_item": "Example Item",
+
+  "chainbreaker.configuration.title": "ChainBreaker Configs",
+  "chainbreaker.configuration.section.chainbreaker.common.toml": "ChainBreaker Configs",
+  "chainbreaker.configuration.section.chainbreaker.common.toml.title": "ChainBreaker Configs",
+  "chainbreaker.configuration.items": "Item List",
+  "chainbreaker.configuration.logDirtBlock": "Log Dirt Block",
+  "chainbreaker.configuration.magicNumberIntroduction": "Magic Number Text",
+  "chainbreaker.configuration.magicNumber": "Magic Number"
+}
