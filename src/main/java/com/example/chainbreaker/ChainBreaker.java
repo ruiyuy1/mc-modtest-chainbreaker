@@ -1,5 +1,8 @@
 package com.example.chainbreaker;
 
+import com.example.chainbreaker.state.PlayerStateStore;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -86,6 +89,8 @@ public class ChainBreaker {
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        modEventBus.addListener(this::registerNetwork);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -106,6 +111,20 @@ public class ChainBreaker {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(EXAMPLE_BLOCK_ITEM);
         }
+    }
+
+    private void registerNetwork(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar("1");
+
+        registrar.playToServer(
+                ChainKeyPacket.TYPE,
+                ChainKeyPacket.CODEC,
+                (payload, context) -> {
+                    context.enqueueWork(() -> {
+                        PlayerStateStore.setChainMode(context.player().getUUID(), payload.isPressed());
+                    });
+                }
+        );
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

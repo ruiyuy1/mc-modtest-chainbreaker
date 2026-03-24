@@ -1,5 +1,6 @@
 package com.example.chainbreaker;
 
+import com.example.chainbreaker.state.PlayerStateStore;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -9,30 +10,30 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import javax.swing.*;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 @EventBusSubscriber(modid = "chainbreaker")
 public class ChainBreakerHandler {
 
     private static boolean isMining = false;
+    private static final Queue<MiningTask> TASK_QUEUE = new java.util.concurrent.ConcurrentLinkedQueue<>();
+
+    private record MiningTask(ServerPlayer player, BlockPos pos) {}
+
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (isMining) return;
         Player player = event.getPlayer();
-        if (player.isShiftKeyDown()){
-            isMining = true;
+        if (PlayerStateStore.isChainModeActive(player.getUUID())){
             try{
                     BlockPos startPos = event.getPos();
                     BlockState startState = event.getState();
                     Block startBlock = startState.getBlock();
                     Queue<BlockPos> queue = new LinkedList<>();
                     Set<BlockPos> visited = new HashSet<>();
-                    int maxCount = 64;
                     int count = 0;
                     Level level = (Level) event.getLevel();
 
@@ -46,20 +47,39 @@ public class ChainBreakerHandler {
                                 queue.add(nextPos);
                                 visited.add(nextPos);
                                 if (player instanceof ServerPlayer serverPlayer) {
-                                    serverPlayer.gameMode.destroyBlock(nextPos);
+                                    TASK_QUEUE.add(new MiningTask(serverPlayer, nextPos));
                                 }
                                 count++;
 
                             }
-                            if (count >= maxCount){
+                            if (count >= Config.MAX_BLOCKS.get()){
                                 break;
                             }
                         }
                     }
-            }finally {
-                isMining = false;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
+        }
+    }
 
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if (TASK_QUEUE.isEmpty()) return;
+
+        isMining = true;
+        try {
+            for (int i = 0; i < Config.MAX_BLOCK_PER_TICKS.get(); i++) {
+                MiningTask task = TASK_QUEUE.poll();
+                if (task == null) break;
+
+                if (task.player() != null && !task.player().isRemoved()) {
+                    task.player().gameMode.destroyBlock(task.pos());
+                }
+            }
+        } finally {
+            isMining = false;
         }
     }
 }
