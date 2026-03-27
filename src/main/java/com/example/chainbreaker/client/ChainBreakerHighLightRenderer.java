@@ -14,12 +14,21 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import java.util.Set;
 
 @EventBusSubscriber(modid = "chainbreaker", value = Dist.CLIENT)
 public class ChainBreakerHighLightRenderer {
+
+    @SubscribeEvent
+    public static void onRenderHighlight(RenderHighlightEvent.Block event) {
+        if (ChainBreakerClientEvent.CHAIN_KEY.isDown()) {
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
@@ -48,12 +57,11 @@ public class ChainBreakerHighLightRenderer {
         for (BlockPos pos : blocks) {
             LevelRenderer.renderLineBox(
                     poseStack, buffer,
-                    pos.getX(), pos.getY(), pos.getZ(),
-                    pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1,
-                    0.0F, 1.0F, 0.0F, 0.4F // 绿色 (RGB: 0,1,0), Alpha: 0.4
+                    (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(),
+                    (double) pos.getX() + 1, (double) pos.getY() + 1, (double) pos.getZ() + 1,
+                    1.0F, 1.0F, 1.0F, 0.4F
             );
         }
-
         poseStack.popPose();
     }
 }
