@@ -1,4 +1,4 @@
-package com.example.chainbreaker;
+package com.example.chainbreaker.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

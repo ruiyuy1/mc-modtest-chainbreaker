@@ -1,7 +1,7 @@
 package com.example.chainbreaker.client;
 
 import com.example.chainbreaker.ChainBreaker;
-import com.example.chainbreaker.ChainKeyPacket;
+import com.example.chainbreaker.network.ChainKeyPacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
