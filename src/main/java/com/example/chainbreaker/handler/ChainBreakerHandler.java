@@ -10,61 +10,39 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.Set;
 
 @EventBusSubscriber(modid = "chainbreaker")
 public class ChainBreakerHandler {
 
     private static boolean isMining = false;
-    private static final Queue<MiningTask> TASK_QUEUE = new ConcurrentLinkedDeque<>();
-
-    private record MiningTask(ServerPlayer player, BlockPos pos) {}
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (isMining) return;
 
         Player player = event.getPlayer();
-        if (PlayerStateStore.isChainModeActive(player.getUUID())) {
-            Level level = (Level) event.getLevel();
-            BlockPos startPos = event.getPos();
+        if (!PlayerStateStore.isChainModeActive(player.getUUID())) return;
 
-            Set<BlockPos> blocksToMine = ChainBreakerScanner.findMatchBlocks(
-                    level,
-                    startPos,
-                    Config.MAX_BLOCKS.get()
-            );
+        Level level = (Level) event.getLevel();
+        BlockPos startPos = event.getPos();
 
-            if (player instanceof ServerPlayer serverPlayer) {
+        Set<BlockPos> blocksToMine = ChainBreakerScanner.findMatchBlocks(
+                level, startPos, Config.MAX_BLOCKS.get()
+        );
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            isMining = true;
+            try {
                 for (BlockPos pos : blocksToMine) {
                     if (!pos.equals(startPos)) {
-                        TASK_QUEUE.add(new MiningTask(serverPlayer, pos));
+                        serverPlayer.gameMode.destroyBlock(pos);
                     }
                 }
+            } finally {
+                isMining = false;
             }
-        }
-    }
-
-
-    @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Post event) {
-        if (TASK_QUEUE.isEmpty()) return;
-
-        isMining = true;
-        try {
-            for (int i = 0; i < Config.MAX_BLOCK_PER_TICKS.get(); i++) {
-                MiningTask task = TASK_QUEUE.poll();
-                if (task == null) break;
-
-                if (task.player() != null && !task.player().isRemoved()) {
-                    task.player().gameMode.destroyBlock(task.pos());
-                }
-            }
-        } finally {
-            isMining = false;
         }
     }
 }

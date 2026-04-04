@@ -1,6 +1,7 @@
 package com.example.chainbreaker;
 
 import java.util.List;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -31,9 +32,6 @@ public class Config {
             .comment("Maximum number of block chain breaker can break")
             .defineInRange("maxBlocks", 64, 1, 1024);
 
-    public static final ModConfigSpec.IntValue MAX_BLOCK_PER_TICKS = BUILDER
-            .comment("Maximum number of block to break per tick")
-            .defineInRange("blocksPerTick", 2, 1, 20);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
