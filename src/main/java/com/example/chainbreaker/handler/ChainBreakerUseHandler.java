@@ -4,6 +4,7 @@ import com.example.chainbreaker.ChainBreaker;
 import com.example.chainbreaker.Config;
 import com.example.chainbreaker.state.PlayerStateStore;
 import com.example.chainbreaker.utils.ChainBreakerScanner;
+import com.example.chainbreaker.utils.ActionExecutor;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,7 +49,7 @@ public final class ChainBreakerUseHandler {
         BlockPos startPos = event.getPos();
         if (level.getBlockState(startPos).isAir()) return;
 
-        Set<BlockPos> blocks = ChainBreakerScanner.findMatchBlocks(level, startPos, Config.MAX_BLOCKS.get());
+        Set<BlockPos> blocks = ChainBreakerScanner.findMatchBlocks(level, startPos, player, Config.MAX_BLOCKS.get());
         if (blocks.size() <= 1) return;
 
         Direction face = event.getHitVec().getDirection();
@@ -58,13 +59,9 @@ public final class ChainBreakerUseHandler {
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
 
-            for (BlockPos pos : blocks) {
+            ActionExecutor.executeInChain(serverPlayer, blocks, startPos, true, pos -> {
                 ItemStack handStack = serverPlayer.getItemInHand(InteractionHand.MAIN_HAND);
-                if (handStack.isEmpty()) break;
-                if (handStack.isDamageableItem()
-                        && handStack.getDamageValue() >= handStack.getMaxDamage() - 2) {
-                    break;
-                }
+                if (handStack.isEmpty()) return false;
 
                 BlockHitResult hit = new BlockHitResult(
                         Vec3.atCenterOf(pos).relative(face, 0.5),
@@ -74,7 +71,8 @@ public final class ChainBreakerUseHandler {
                 );
                 UseOnContext ctx = new UseOnContext(level, serverPlayer, InteractionHand.MAIN_HAND, handStack, hit);
                 handStack.useOn(ctx);
-            }
+                return true;
+            });
         } finally {
             isChainUse = false;
         }

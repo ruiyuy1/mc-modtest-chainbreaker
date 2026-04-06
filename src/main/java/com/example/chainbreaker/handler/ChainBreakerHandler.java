@@ -3,6 +3,7 @@ package com.example.chainbreaker.handler;
 import com.example.chainbreaker.Config;
 import com.example.chainbreaker.state.PlayerStateStore;
 import com.example.chainbreaker.utils.ChainBreakerScanner;
+import com.example.chainbreaker.utils.ActionExecutor;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,21 +33,16 @@ public class ChainBreakerHandler {
         BlockPos startPos = event.getPos();
 
         Set<BlockPos> blocksSelected = ChainBreakerScanner.findMatchBlocks(
-                level, startPos, Config.MAX_BLOCKS.get()
+                level, startPos, player, Config.MAX_BLOCKS.get()
         );
 
         if (player instanceof ServerPlayer serverPlayer) {
             isMining = true;
             try {
-                for (BlockPos pos : blocksSelected) {
-                    if (!pos.equals(startPos)) {
-                        ItemStack tool = serverPlayer.getMainHandItem();
-                        if (tool.isDamageableItem() && tool.getDamageValue() >= tool.getMaxDamage() - 2){
-                            break;
-                        }
-                        serverPlayer.gameMode.destroyBlock(pos);
-                    }
-                }
+                ActionExecutor.executeInChain(serverPlayer, blocksSelected, startPos, false, pos -> {
+                    serverPlayer.gameMode.destroyBlock(pos);
+                    return true;
+                });
             } finally {
                 isMining = false;
             }

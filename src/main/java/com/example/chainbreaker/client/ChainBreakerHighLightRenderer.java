@@ -42,7 +42,7 @@ public class ChainBreakerHighLightRenderer {
         HitResult hit = mc.hitResult;
         if (hit == null || hit.getType() != HitResult.Type.BLOCK) return;
         BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
-        Set<BlockPos> blocks = ChainBreakerScanner.findMatchBlocks(mc.level, targetPos, Config.MAX_BLOCKS.get());
+        Set<BlockPos> blocks = ChainBreakerScanner.findMatchBlocks(mc.level, targetPos, mc.player, Config.MAX_BLOCKS.get());
         drawOutline(event, blocks);
     }
 
