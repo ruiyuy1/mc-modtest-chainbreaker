@@ -1,6 +1,8 @@
 package com.example.chainbreaker;
 
 import com.example.chainbreaker.network.ChainKeyPacket;
+import com.example.chainbreaker.registry.ModCreativeTabs;
+import com.example.chainbreaker.registry.ModItems;
 import com.example.chainbreaker.state.PlayerStateStore;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -20,6 +22,10 @@ public class ChainBreaker {
 
     public ChainBreaker(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        
+        ModItems.ITEMS.register(modEventBus);
+        ModCreativeTabs.TABS.register(modEventBus);
+
         modEventBus.addListener(this::registerNetwork);
     }
 

@@ -1,0 +1,7 @@
+{
+  "itemGroup.chainbreaker": "连锁破坏",
+  "item.chainbreaker.chain_core": "连锁核心",
+
+  "chainbreaker.configuration.title": "连锁破坏配置",
+  "chainbreaker.configuration.maxBlocks": "最大连锁数量"
+}
