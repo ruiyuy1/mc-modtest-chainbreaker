@@ -1,6 +1,6 @@
 {
   "itemGroup.chainbreaker": "Chain Breaker",
-  "item.chainbreaker.chain_core": "Chain Core",
+  "item.chainbreaker.chain_gem": "Chain Gem",
 
   "chainbreaker.configuration.title": "ChainBreaker Configs",
   "chainbreaker.configuration.maxBlocks": "Max Blocks"

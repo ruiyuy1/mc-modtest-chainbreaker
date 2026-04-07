@@ -14,8 +14,8 @@ public class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CHAINBREAKER_TAB = TABS.register("chainbreaker_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.chainbreaker"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> ModItems.CHAIN_CORE.get().getDefaultInstance())
+            .icon(() -> ModItems.CHAIN_GEM.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                output.accept(ModItems.CHAIN_CORE.get());
+                output.accept(ModItems.CHAIN_GEM.get());
             }).build());
 }

@@ -8,5 +8,5 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(ChainBreaker.MODID);
 
-    public static final DeferredItem<Item> CHAIN_CORE = ITEMS.registerSimpleItem("chain_core", new Item.Properties());
+    public static final DeferredItem<Item> CHAIN_GEM = ITEMS.registerSimpleItem("chain_gem", new Item.Properties());
 }

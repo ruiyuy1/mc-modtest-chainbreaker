@@ -1,6 +1,6 @@
 {
   "itemGroup.chainbreaker": "连锁破坏",
-  "item.chainbreaker.chain_core": "连锁核心",
+  "item.chainbreaker.chain_gem": "连锁宝石",
 
   "chainbreaker.configuration.title": "连锁破坏配置",
   "chainbreaker.configuration.maxBlocks": "最大连锁数量"
