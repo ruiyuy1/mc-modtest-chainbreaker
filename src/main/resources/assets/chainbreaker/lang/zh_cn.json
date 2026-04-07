@@ -1,6 +1,7 @@
 {
   "itemGroup.chainbreaker": "连锁破坏",
   "item.chainbreaker.chain_gem": "连锁宝石",
+  "item.chainbreaker.resonance_wand": "共振法杖",
 
   "chainbreaker.configuration.title": "连锁破坏配置",
   "chainbreaker.configuration.maxBlocks": "最大连锁数量"

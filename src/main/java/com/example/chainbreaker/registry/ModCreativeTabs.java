@@ -17,5 +17,6 @@ public class ModCreativeTabs {
             .icon(() -> ModItems.CHAIN_GEM.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.CHAIN_GEM.get());
+                output.accept(ModItems.RESONANCE_WAND.get());
             }).build());
 }

@@ -1,6 +1,7 @@
 {
   "itemGroup.chainbreaker": "Chain Breaker",
   "item.chainbreaker.chain_gem": "Chain Gem",
+  "item.chainbreaker.resonance_wand": "Resonance Wand",
 
   "chainbreaker.configuration.title": "ChainBreaker Configs",
   "chainbreaker.configuration.maxBlocks": "Max Blocks"
